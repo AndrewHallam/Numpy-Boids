@@ -16,29 +16,35 @@ boid_x_velocities=np.array([random.uniform(0,10.0) for x in range(50)])
 boid_y_velocities=np.array([random.uniform(-20.0,20.0) for x in range(50)])
 
 def update_boids(xs, ys, xvs, yvs):
-    
+         
+
+        xdiff = np.add.outer(xs,-xs)
+        ydiff = np.add.outer(ys,-ys)
         
-        for i in range(xs.size):
-                for j in range(xs.size):
-                       distance=(xs[j]-xs[i])**2 + (ys[j]-ys[i])**2
-                       
-                       if distance < 100:
-                              xvs[i]+=(xs[i]-xs[j])+(xs[j]-xs[i])*0.01/len(xs)
-			      yvs[i]+=(ys[i]-ys[j])+(ys[j]-ys[i])*0.01/len(xs)
-                              
-                       else:
-                              xvs[i]+=(xs[j]-xs[i])*0.01/len(xs)
-			      yvs[i]+=(ys[j]-ys[i])*0.01/len(xs)
-       
-        for i in range(xs.size):
-                for j in range(xs.size):
-                       distance=(xs[j]-xs[i])**2 + (ys[j]-ys[i])**2
-                       if distance < 10000:
-                              xvs[i]+=(xvs[j]-xvs[i])*0.125/len(xs)
-			      yvs[i]+=(yvs[j]-yvs[i])*0.125/len(xs)
-                              
-		xs += xvs
-		ys += yvs
+        xvdiff = np.add.outer(xvs,-xvs)
+        yvdiff = np.add.outer(yvs,-yvs)
+        
+        distance=xdiff**2+ydiff**2
+        
+    	for i in range(len(xs)):
+		for j in range(len(xs)):
+			xvs[i] += xdiff[j,i]*0.01/len(xs)
+			yvs[i] += ydiff[j,i]*0.01/len(xs)
+	                if distance[i,j] < 100:
+				xvs[i] += -xdiff[i,j]
+				yvs[i] += -ydiff[i,j]
+	                    
+
+	for i in range(len(xs)):
+		for j in range(len(xs)):
+			if distance[i,j] < 10000:
+				xvs[i]+=xvdiff[j,i]*0.125/len(xs)
+				yvs[i]+=yvdiff[j,i]*0.125/len(xs)
+				
+				
+	for i in range(len(xs)):
+		xs[i] += xvs[i]
+		ys[i] += yvs[i]                      
 
 
 figure=plt.figure()
