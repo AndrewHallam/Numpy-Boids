@@ -23,29 +23,32 @@ def update_boids(xs, ys, xvs, yvs):
         
         xvdiff = np.add.outer(xvs,-xvs)
         yvdiff = np.add.outer(yvs,-yvs)
-        
         distance=xdiff**2+ydiff**2
+        cond1=distance < 100
+        cond2=distance < 10000
         
-    	for i in range(len(xs)):
-		for j in range(len(xs)):
-			xvs[i] += xdiff[j,i]*0.01/len(xs)
-			yvs[i] += ydiff[j,i]*0.01/len(xs)
-	                if distance[i,j] < 100:
-				xvs[i] += -xdiff[i,j]
-				yvs[i] += -ydiff[i,j]
-	                    
+    	xvs += np.sum(xdiff[:,],axis=0)*0.01/50
+        yvs += np.sum(ydiff[:,],axis=0)*0.01/50
+        
+        
+        yvs += -np.sum(xdiff[:,]*cond1,axis=0)
+        xvs += -np.sum(ydiff[:,]*cond1,axis=0)
 
-	for i in range(len(xs)):
-		for j in range(len(xs)):
-			if distance[i,j] < 10000:
-				xvs[i]+=xvdiff[j,i]*0.125/len(xs)
-				yvs[i]+=yvdiff[j,i]*0.125/len(xs)
-				
-				
-	for i in range(len(xs)):
-		xs[i] += xvs[i]
-		ys[i] += yvs[i]                      
 
+# Replacing the below loop with this makes the code sigificantly faster but also slightly different/
+   	xvs += np.sum(xdiff[:,]*cond2,axis=0)*0.125/50
+        yvs += np.sum(ydiff[:,]*cond2,axis=0)*0.125/50
+
+# This is similar to the other codes but also much slower.
+#	for i in range(50):
+#		for j in range(50):
+#			if distance[i,j] < 10000:
+#				xvs[i]+=xvdiff[j,i]*0.125/50
+#				yvs[i]+=yvdiff[j,i]*0.125/50
+				
+	xs += xvs
+	ys += yvs			
+                   
 
 figure=plt.figure()
 axes=plt.axes(xlim=(-500,1500), ylim=(-500,1500))
