@@ -35,11 +35,11 @@ def update_boids(xs, ys, xvs, yvs):
         xvs += -np.sum(ydiff[:,]*cond1,axis=0)
 
 
-# Replacing the below loop with this makes the code sigificantly faster but also slightly different/
+# Replacing the below loop with this makes the code sigificantly faster but also slightly different.
    	xvs += np.sum(xdiff[:,]*cond2,axis=0)*0.125/50
         yvs += np.sum(ydiff[:,]*cond2,axis=0)*0.125/50
 
-# This is similar to the other codes but also much slower.
+# This is similar to the other codes but also much slower. It is included in case changes made are unacceptable. 
 #	for i in range(50):
 #		for j in range(50):
 #			if distance[i,j] < 10000:
